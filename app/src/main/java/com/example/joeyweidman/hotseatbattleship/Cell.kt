@@ -71,7 +71,7 @@ class Cell : View {
             MotionEvent.ACTION_DOWN -> {
                 currentStatus = Status.SHIP
                 Log.e("Cell", xPos.toString() + " , " + yPos.toString())
-                GameScreenActivity.statusGrid[xPos][yPos] = currentStatus
+                GameInfo.statusGridHistoryP1[xPos][yPos] = currentStatus
                 invalidate()
             }
         }

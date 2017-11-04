@@ -19,7 +19,6 @@
         android:text="Turn"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/opponentGrid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,14 +30,12 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
-        android:columnCount="10"
-        android:rowCount="10"
-        app:layout_constraintBottom_toTopOf="@+id/shipGridLayout"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintEnd_toStartOf="@+id/shipGridLayout"
+        tools:layout_editor_absoluteX="8dp">
 
     </GridLayout>
 
@@ -46,15 +43,15 @@
         android:id="@+id/shipGridLayout"
         android:layout_width="225dp"
         android:layout_height="225dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/historyGridLayout">
+        app:layout_constraintStart_toEndOf="@+id/historyGridLayout"
+        app:layout_constraintTop_toBottomOf="@id/textView">
+
     </GridLayout>
 
 

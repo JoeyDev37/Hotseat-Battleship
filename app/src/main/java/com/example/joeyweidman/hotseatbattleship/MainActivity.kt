@@ -13,8 +13,8 @@ class MainActivity : AppCompatActivity() {
 
         //Button opens up the brush control activity
         newGameButton.setOnClickListener {
-            val intent: Intent = Intent(applicationContext, GameScreenActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            val intent: Intent = Intent(applicationContext, PlaceShipsActivity::class.java)
+            //intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             startActivity(intent)
         }
     }

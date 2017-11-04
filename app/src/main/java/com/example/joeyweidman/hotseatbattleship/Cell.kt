@@ -12,23 +12,53 @@ import android.opengl.ETC1.getWidth
 
 
 /**
- * Created by pcjoe on 11/3/2017.
+ * Created by Joey Weidman on 11/3/2017.
  */
 class Cell : View {
-    constructor(context: Context?, x: Int, y: Int) : super(context)
+    var xPos: Int = 0
+    var yPos: Int = 0
+    constructor(context: Context?, x: Int, y: Int, status: Status) : super(context) {
+        xPos = x
+        yPos = y
+        currentStatus = status
+    }
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    var currentStatus: Status = Status.EMPTY
-    var selectedColor = Color.GREEN
+    var currentStatus: Status
+        set(newStatus) {
+            field = newStatus
+            invalidate()
+        }
+    var selectedColor: Int
+
+    init {
+        currentStatus = Status.EMPTY
+        selectedColor = Color.CYAN
+    }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
         if (canvas !is Canvas)
             return
+
+        when(currentStatus) {
+            Status.EMPTY -> {
+                selectedColor = Color.CYAN
+            }
+            Status.SHIP -> {
+                selectedColor = Color.GRAY
+            }
+            Status.MISS -> {
+                selectedColor = Color.RED
+            }
+            Status.SUNK -> {
+                selectedColor = Color.BLACK
+            }
+        }
 
         canvas.drawColor(selectedColor)
     }
@@ -39,7 +69,9 @@ class Cell : View {
 
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
-                selectedColor = Color.YELLOW
+                currentStatus = Status.SHIP
+                Log.e("Cell", xPos.toString() + " , " + yPos.toString())
+                GameScreenActivity.statusGrid[xPos][yPos] = currentStatus
                 invalidate()
             }
         }

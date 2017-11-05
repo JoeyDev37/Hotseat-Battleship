@@ -12,7 +12,7 @@ class PlaceShipsActivity : AppCompatActivity() {
 
     val GRID_SIZE = 10
     lateinit var shipGrid: Array<Array<Cell>>
-    var currentStatusGrid = GameInfo.statusGridShipsP1
+    lateinit var currentStatusGrid:  Array<Array<Status>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +24,7 @@ class PlaceShipsActivity : AppCompatActivity() {
         }
 
         if(GameInfo.currentPlayer == 2) {
-            currentStatusGrid = GameInfo.statusGridHistoryP2
+            currentStatusGrid = GameInfo.statusGridShipsP2
             placeShipsTextView.text = "P2 Place Ships"
         }
 
@@ -70,6 +70,7 @@ class PlaceShipsActivity : AppCompatActivity() {
                 val intent: Intent = Intent(applicationContext, PlaceShipsActivity::class.java)
                 startActivity(intent)
             } else {
+                GameInfo.currentPlayer = 1
                 val intent: Intent = Intent(applicationContext, GameScreenActivity::class.java)
                 startActivity(intent)
             }
@@ -89,7 +90,7 @@ class PlaceShipsActivity : AppCompatActivity() {
     }
 
     fun placeShip(shipToPlace: Ship) {
-        var shipTypeStatus: Status
+        val shipTypeStatus: Status
         when(shipToPlace) {
             Ship.DESTROYER -> {
                 shipTypeStatus = Status.DESTROYER

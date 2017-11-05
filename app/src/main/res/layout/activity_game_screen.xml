@@ -19,15 +19,15 @@
         android:text="Turn"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/opponentGrid"
+        app:layout_constraintBottom_toTopOf="@+id/historyGridLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <GridLayout
         android:id="@+id/historyGridLayout"
-        android:layout_width="225dp"
-        android:layout_height="225dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -44,8 +44,8 @@
 
     <GridLayout
         android:id="@+id/shipGridLayout"
-        android:layout_width="225dp"
-        android:layout_height="225dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -58,6 +58,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/historyGridLayout">
     </GridLayout>
+
+    <TextView
+        android:id="@+id/popupText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorAccent"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/historyGridLayout"/>
+
+    <Button
+        android:id="@+id/nextPlayerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Next Player"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/shipGridLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -1,14 +1,14 @@
 package com.example.joeyweidman.hotseatbattleship
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-
+import kotlinx.android.synthetic.main.activity_game_screen.*
+import kotlinx.android.synthetic.main.activity_game_screen.view.*
 
 
 /**
@@ -49,7 +49,7 @@ class Cell : View {
             return
 
         when(currentStatus) {
-            Status.EMPTY -> {
+            (Status.EMPTY) -> {
                 selectedColor = Color.CYAN
             }
             (Status.DESTROYER) -> {
@@ -67,7 +67,10 @@ class Cell : View {
             (Status.CARRIER) -> {
                 selectedColor = Color.GRAY
             }
-            Status.MISS -> {
+            (Status.HIT) -> {
+                selectedColor = Color.GREEN
+            }
+            (Status.MISS) -> {
                 selectedColor = Color.RED
             }
             Status.SUNK -> {
@@ -82,15 +85,55 @@ class Cell : View {
         if(event !is MotionEvent)
             return false
 
+        var currentHistoryStatusGrid:  Array<Array<Status>> = Array(10, {Array(10, {Status.EMPTY})})
+        var opponentShipStatusGrid: Array<Array<Status>> = Array(10, {Array(10, {Status.EMPTY})})
+        if(GameInfo.currentPlayer == 1) {
+            currentHistoryStatusGrid = GameInfo.statusGridHistoryP1
+            opponentShipStatusGrid = GameInfo.statusGridShipsP2
+        }
+
+        if(GameInfo.currentPlayer == 2) {
+            currentHistoryStatusGrid = GameInfo.statusGridHistoryP2
+            opponentShipStatusGrid = GameInfo.statusGridShipsP1
+        }
+
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
                 if(isActive) {
-                    if(currentStatus == Status.DESTROYER || currentStatus == Status.CRUISER || currentStatus == Status.SUBMARINE ||
-                            currentStatus == Status.BATTLESHIP || currentStatus == Status.CARRIER) {
-                        currentStatus = Status.HIT
+                    //This means you have already chosen this cell previously
+                    if(currentHistoryStatusGrid[xPos][yPos] == Status.HIT || currentHistoryStatusGrid[xPos][yPos] == Status.MISS || currentHistoryStatusGrid[xPos][yPos] == Status.SUNK ) {
+                        return true
                     }
-                    Log.e("Cell", xPos.toString() + " , " + yPos.toString())
-                    GameInfo.statusGridHistoryP1[xPos][yPos] = currentStatus
+                    if(opponentShipStatusGrid[xPos][yPos] == Status.EMPTY) {
+
+                        currentStatus = Status.MISS
+
+                        val status: String = "MISS"
+
+                        if(GameInfo.currentPlayer == 1)
+                            GameInfo.currentPlayer = 2
+                        else
+                            GameInfo.currentPlayer = 1
+
+                        val intent: Intent = Intent(context, TextActivity::class.java)
+                        intent.putExtra("STATUS", status)
+                        context.startActivity(intent)
+
+                    } else {
+                        currentStatus = Status.HIT
+
+                        val status: String = "HIT"
+
+                        if(GameInfo.currentPlayer == 1)
+                            GameInfo.currentPlayer = 2
+                        else
+                            GameInfo.currentPlayer = 1
+
+                        val intent: Intent = Intent(context, TextActivity::class.java)
+                        intent.putExtra("STATUS", status)
+                        context.startActivity(intent)
+                    }
+                    currentHistoryStatusGrid[xPos][yPos] = currentStatus
                     invalidate()
                 }
             }

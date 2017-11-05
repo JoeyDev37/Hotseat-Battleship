@@ -17,7 +17,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".GameScreenActivity" />
-        <activity android:name=".PlaceShipsActivity"></activity>
+        <activity android:name=".PlaceShipsActivity" />
+        <activity
+            android:name=".TextActivity"
+            android:label="@string/title_activity_text"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

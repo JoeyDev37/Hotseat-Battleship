@@ -1,15 +1,17 @@
 package com.example.joeyweidman.hotseatbattleship
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
+import android.view.ViewGroup
 import android.widget.GridLayout
 import kotlinx.android.synthetic.main.activity_game_screen.*
-import java.io.Serializable
 import android.view.MotionEvent
+import android.view.View
 import android.view.View.OnTouchListener
+
+
 
 
 
@@ -19,72 +21,116 @@ import android.view.View.OnTouchListener
  */
 class GameScreenActivity : AppCompatActivity() {
 
-    val GRID_SIZE: Int = 10 //Number of rows and columns
-
-    lateinit var historyGrid: Array<Array<Cell>>
-    lateinit var shipGrid: Array<Array<Cell>>
-    lateinit var currentHistoryStatusGrid:  Array<Array<Status>>
-    lateinit var currentShipsStatusGrid:  Array<Array<Status>>
-
+    lateinit var topGrid: Array<Array<Cell>>
+    lateinit var bottomGrid: Array<Array<Cell>>
+    lateinit var opponentShipGrid: Array<Array<Cell>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_screen)
 
         if(GameInfo.currentPlayer == 1) {
-            currentShipsStatusGrid = GameInfo.statusGridShipsP1
-            currentHistoryStatusGrid = GameInfo.statusGridHistoryP1
+            playerTurnText.text = "P1 Turn"
+            topGrid = GameInfo.P1AttackGrid
+            bottomGrid = GameInfo.P1ShipGrid
+        } else if(GameInfo.currentPlayer == 2) {
+            playerTurnText.text = "P2 Turn"
+            topGrid = GameInfo.P2AttackGrid
+            bottomGrid = GameInfo.P2ShipGrid
         }
-        if(GameInfo.currentPlayer == 2) {
-            Log.e("GameScreenActivity", "REACHED")
-            currentShipsStatusGrid = GameInfo.statusGridShipsP2
-            currentHistoryStatusGrid = GameInfo.statusGridHistoryP2
-        }
-
-        historyGrid = Array(10, { Array(10, { Cell(this) }) })
-        shipGrid = Array(10, { Array(10, { Cell(this) }) })
 
         @SuppressLint("ClickableViewAccessibility")
         for(yPos in 0..9) {
             for(xPos in 0..9) {
-                val cell = Cell(this, xPos, yPos, currentHistoryStatusGrid[xPos][yPos], true)
+                var currentCell: Cell = topGrid[xPos][yPos]
+                currentCell.setOnTouchListener(object : OnTouchListener {
+                    override fun onTouch(v: View, event: MotionEvent): Boolean {
+                        if(GameInfo.currentPlayer == 1) {
+                            opponentShipGrid = GameInfo.P2ShipGrid
+                        } else if(GameInfo.currentPlayer == 2) {
+                            opponentShipGrid = GameInfo.P1ShipGrid
+                        }
+                        when(event.action) {
+                            (MotionEvent.ACTION_DOWN) -> {
+                                if(currentCell.isTouchable) {
+                                    //This means you have already chosen this cell previously
+                                    if(topGrid[xPos][yPos].currentStatus == Status.HIT || topGrid[xPos][yPos].currentStatus == Status.MISS || topGrid[xPos][yPos].currentStatus == Status.SUNK ) {
+                                        return true
+                                    }
+                                    if(opponentShipGrid[xPos][yPos].currentStatus == Status.EMPTY) {
 
-                /*cell.setOnTouchListener(OnTouchListener { _, event ->
-                    if (event.action == MotionEvent.ACTION_UP) {
-                        //nextPlayerButton.visibility = View.VISIBLE
-                        // Do what you want
-                        return@OnTouchListener true
+                                        currentCell.currentStatus = Status.MISS
+
+                                        val status: String = "MISS"
+
+                                        if(GameInfo.currentPlayer == 1)
+                                            GameInfo.currentPlayer = 2
+                                        else
+                                            GameInfo.currentPlayer = 1
+
+                                        val intent: Intent = Intent(applicationContext, TextActivity::class.java)
+                                        intent.putExtra("STATUS", status)
+                                        applicationContext.startActivity(intent)
+
+                                    } else {
+                                        currentCell.currentStatus = Status.HIT
+
+                                        val status: String = "HIT"
+
+                                        if(GameInfo.currentPlayer == 1)
+                                            GameInfo.currentPlayer = 2
+                                        else
+                                            GameInfo.currentPlayer = 1
+
+                                        val intent: Intent = Intent(applicationContext, TextActivity::class.java)
+                                        intent.putExtra("STATUS", status)
+                                        applicationContext.startActivity(intent)
+                                    }
+                                    //playerAttackGrid[xPos][yPos].currentStatus = currentStatus
+                                    currentCell.invalidate()
+                                }
+                            }
+                        }
+                        return true
                     }
-                    false
-                })*/
-                historyGrid[xPos][yPos] = cell
-                historyGridLayout.addView(cell)
+                })
+                if(topGrid[xPos][yPos].parent != null) {
+                    val parent: ViewGroup = topGrid[xPos][yPos].parent as ViewGroup
+                    parent.removeView(topGrid[xPos][yPos])
+                    attackGridLayout.addView(topGrid[xPos][yPos])
+                } else {
+                    attackGridLayout.addView(topGrid[xPos][yPos])
+                }
             }
         }
         for(yPos in 0..9) {
             for(xPos in 0..9) {
-                val cell = Cell(this, xPos, yPos, currentShipsStatusGrid[xPos][yPos], false)
-                shipGrid[xPos][yPos] = cell
-                shipGridLayout.addView(cell)
+                if(bottomGrid[xPos][yPos].parent != null) {
+                    val parent: ViewGroup = bottomGrid[xPos][yPos].parent as ViewGroup
+                    parent.removeView(bottomGrid[xPos][yPos])
+                    shipGridLayout.addView(bottomGrid[xPos][yPos])
+                } else {
+                    shipGridLayout.addView(bottomGrid[xPos][yPos])
+                }
             }
         }
 
-        historyGridLayout.viewTreeObserver.addOnGlobalLayoutListener(
+        attackGridLayout.viewTreeObserver.addOnGlobalLayoutListener(
                 {
                     val MARGIN = 5
 
-                    var layoutWidth = historyGridLayout.width
-                    var layoutHeight = historyGridLayout.height
-                    val cellWidth = layoutWidth / GRID_SIZE
-                    val cellHeight = layoutHeight / GRID_SIZE
+                    var layoutWidth = attackGridLayout.width
+                    var layoutHeight = attackGridLayout.height
+                    val cellWidth = layoutWidth / GameInfo.GRID_SIZE
+                    val cellHeight = layoutHeight / GameInfo.GRID_SIZE
 
-                    for (yPos in 0..GRID_SIZE - 1) {
-                        for (xPos in 0..GRID_SIZE - 1) {
-                            val params = historyGrid[xPos][yPos].layoutParams as GridLayout.LayoutParams
+                    for (yPos in 0..GameInfo.GRID_SIZE - 1) {
+                        for (xPos in 0..GameInfo.GRID_SIZE - 1) {
+                            val params = topGrid[xPos][yPos].layoutParams as GridLayout.LayoutParams
                             params.width = cellWidth - 2 * MARGIN
                             params.height = cellHeight - 2 * MARGIN
                             params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN)
-                            historyGrid[xPos][yPos].layoutParams = params
+                            topGrid[xPos][yPos].layoutParams = params
                         }
                     }
                 })
@@ -95,16 +141,16 @@ class GameScreenActivity : AppCompatActivity() {
 
                     var layoutWidth = shipGridLayout.width
                     var layoutHeight = shipGridLayout.height
-                    val cellWidth = layoutWidth / GRID_SIZE
-                    val cellHeight = layoutHeight / GRID_SIZE
+                    val cellWidth = layoutWidth / GameInfo.GRID_SIZE
+                    val cellHeight = layoutHeight / GameInfo.GRID_SIZE
 
-                    for (yPos in 0..GRID_SIZE - 1) {
-                        for (xPos in 0..GRID_SIZE - 1) {
-                            val params = shipGrid[xPos][yPos].layoutParams as GridLayout.LayoutParams
+                    for (yPos in 0..GameInfo.GRID_SIZE - 1) {
+                        for (xPos in 0..GameInfo.GRID_SIZE - 1) {
+                            val params = bottomGrid[xPos][yPos].layoutParams as GridLayout.LayoutParams
                             params.width = cellWidth - 2 * MARGIN
                             params.height = cellHeight - 2 * MARGIN
                             params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN)
-                            shipGrid[xPos][yPos].layoutParams = params
+                            bottomGrid[xPos][yPos].layoutParams = params
                         }
                     }
                 })

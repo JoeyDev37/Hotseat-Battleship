@@ -11,6 +11,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        GameInfo.P1ShipGrid = Array(10, {Array(10, {Cell(this, false)})})
+        GameInfo.P1AttackGrid = Array(10, {Array(10, {Cell(this, true)})})
+        GameInfo.P2ShipGrid = Array(10, {Array(10, {Cell(this, false)})})
+        GameInfo.P2AttackGrid = Array(10, {Array(10, {Cell(this, true)})})
+
         //Button opens up the brush control activity
         newGameButton.setOnClickListener {
             val intent: Intent = Intent(applicationContext, PlaceShipsActivity::class.java)

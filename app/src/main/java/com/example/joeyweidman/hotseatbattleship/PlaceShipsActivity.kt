@@ -1,5 +1,6 @@
 package com.example.joeyweidman.hotseatbattleship
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Point
 import android.support.v7.app.AppCompatActivity
@@ -10,32 +11,24 @@ import java.util.*
 
 class PlaceShipsActivity : AppCompatActivity() {
 
-    val GRID_SIZE = 10
-    lateinit var shipGrid: Array<Array<Cell>>
-    lateinit var currentStatusGrid:  Array<Array<Status>>
+    lateinit var grid: Array<Array<Cell>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_place_ships)
 
         if(GameInfo.currentPlayer == 1) {
-            currentStatusGrid = GameInfo.statusGridShipsP1
             placeShipsTextView.text = "P1 Place Ships"
-        }
-
-        if(GameInfo.currentPlayer == 2) {
-            currentStatusGrid = GameInfo.statusGridShipsP2
+            grid = GameInfo.P1ShipGrid
+        } else if (GameInfo.currentPlayer == 2) {
             placeShipsTextView.text = "P2 Place Ships"
+            grid = GameInfo.P2ShipGrid
         }
 
-
-        shipGrid = Array(10, { Array(10, { Cell(this) }) })
 
         for(yPos in 0..9) {
             for(xPos in 0..9) {
-                var cell: Cell = Cell(this, xPos, yPos, currentStatusGrid[xPos][yPos], false)
-                shipGrid[xPos][yPos] = cell
-                placeShipsGridLayout.addView(cell)
+                placeShipsGridLayout.addView(grid[xPos][yPos])
             }
         }
 
@@ -45,16 +38,16 @@ class PlaceShipsActivity : AppCompatActivity() {
 
                     var layoutWidth = placeShipsGridLayout.width
                     var layoutHeight = placeShipsGridLayout.height
-                    val cellWidth = layoutWidth / GRID_SIZE
-                    val cellHeight = layoutHeight / GRID_SIZE
+                    val cellWidth = layoutWidth / GameInfo.GRID_SIZE
+                    val cellHeight = layoutHeight / GameInfo.GRID_SIZE
 
-                    for (yPos in 0..GRID_SIZE - 1) {
-                        for (xPos in 0..GRID_SIZE - 1) {
-                            val params = shipGrid[xPos][yPos].layoutParams as GridLayout.LayoutParams
+                    for (yPos in 0..GameInfo.GRID_SIZE - 1) {
+                        for (xPos in 0..GameInfo.GRID_SIZE - 1) {
+                            val params = grid[xPos][yPos].layoutParams as GridLayout.LayoutParams
                             params.width = cellWidth - 2 * MARGIN
                             params.height = cellHeight - 2 * MARGIN
                             params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN)
-                            shipGrid[xPos][yPos].layoutParams = params
+                            grid[xPos][yPos].layoutParams = params
                         }
                     }
                 })
@@ -81,33 +74,9 @@ class PlaceShipsActivity : AppCompatActivity() {
         for(ship in Ship.values()) {
             placeShip(ship)
         }
-        //Refresh the grid
-        for(i in 0..GRID_SIZE - 1) {
-            for (j in 0..GRID_SIZE - 1) {
-                shipGrid[j][i].currentStatus = currentStatusGrid[j][i]
-            }
-        }
     }
 
     fun placeShip(shipToPlace: Ship) {
-        val shipTypeStatus: Status
-        when(shipToPlace) {
-            Ship.DESTROYER -> {
-                shipTypeStatus = Status.DESTROYER
-            }
-            Ship.CRUISER -> {
-                shipTypeStatus = Status.CRUISER
-            }
-            Ship.SUBMARINE -> {
-                shipTypeStatus = Status.SUBMARINE
-            }
-            Ship.BATTLESHIP -> {
-                shipTypeStatus = Status.BATTLESHIP
-            }
-            Ship.CARRIER -> {
-                shipTypeStatus = Status.CARRIER
-            }
-        }
 
         var potentialPlacement: Array<Point>
         start@while(true) {
@@ -124,7 +93,7 @@ class PlaceShipsActivity : AppCompatActivity() {
             when(randomDirection) {
                 Direction.NORTH -> {
                     for(i in 1..shipToPlace.size - 1) {
-                        if(currentPoint.y - 1 < 0 || currentStatusGrid[currentPoint.x][currentPoint.y - 1] != Status.EMPTY) {
+                        if(currentPoint.y - 1 < 0 || grid[currentPoint.x][currentPoint.y - 1].currentStatus != Status.EMPTY) {
                             continue@start
                         } else {
                             currentPoint.y--
@@ -137,7 +106,7 @@ class PlaceShipsActivity : AppCompatActivity() {
                 }
                 Direction.SOUTH -> {
                     for(i in 1..shipToPlace.size - 1) {
-                        if(currentPoint.y + 1 > 9 || currentStatusGrid[currentPoint.x][currentPoint.y + 1] != Status.EMPTY) {
+                        if(currentPoint.y + 1 > 9 || grid[currentPoint.x][currentPoint.y + 1].currentStatus != Status.EMPTY) {
                             continue@start
                         } else {
                             currentPoint.y++
@@ -150,7 +119,7 @@ class PlaceShipsActivity : AppCompatActivity() {
                 }
                 Direction.EAST -> {
                     for(i in 1..shipToPlace.size - 1) {
-                        if(currentPoint.x + 1 > 9 || currentStatusGrid[currentPoint.x + 1][currentPoint.y] != Status.EMPTY) {
+                        if(currentPoint.x + 1 > 9 || grid[currentPoint.x + 1][currentPoint.y].currentStatus != Status.EMPTY) {
                             continue@start
                         } else {
                             currentPoint.x++
@@ -163,7 +132,7 @@ class PlaceShipsActivity : AppCompatActivity() {
                 }
                 Direction.WEST -> {
                     for(i in 1..shipToPlace.size - 1) {
-                        if(currentPoint.x - 1 < 0 || currentStatusGrid[currentPoint.x - 1][currentPoint.y] != Status.EMPTY) {
+                        if(currentPoint.x - 1 < 0 || grid[currentPoint.x - 1][currentPoint.y].currentStatus != Status.EMPTY) {
                             continue@start
                         } else {
                             currentPoint.x--
@@ -177,15 +146,12 @@ class PlaceShipsActivity : AppCompatActivity() {
             }
         }
         for(i in potentialPlacement) {
-            currentStatusGrid[i.x][i.y] = shipTypeStatus
+            grid[i.x][i.y].currentStatus = Status.SHIP
         }
     }
 
-    enum class Direction(value: Int) {
-        NORTH(0),
-        SOUTH(1),
-        EAST(2),
-        WEST(3);
+    enum class Direction {
+        NORTH, SOUTH, EAST, WEST;
 
         companion object {
             fun randomDirection(): Direction {

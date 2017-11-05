@@ -27,14 +27,14 @@ class GameScreenActivity : AppCompatActivity() {
 
         for(yPos in 0..9) {
             for(xPos in 0..9) {
-                val cell = Cell(this, xPos, yPos, GameInfo.statusGridHistoryP1[xPos][yPos])
+                val cell = Cell(this, xPos, yPos, GameInfo.statusGridHistoryP1[xPos][yPos], true)
                 historyGrid[xPos][yPos] = cell
                 historyGridLayout.addView(cell)
             }
         }
         for(yPos in 0..9) {
             for(xPos in 0..9) {
-                val cell = Cell(this, xPos, yPos, GameInfo.statusGridShipsP1[xPos][yPos])
+                val cell = Cell(this, xPos, yPos, GameInfo.statusGridShipsP1[xPos][yPos], false)
                 shipGrid[xPos][yPos] = cell
                 shipGridLayout.addView(cell)
             }

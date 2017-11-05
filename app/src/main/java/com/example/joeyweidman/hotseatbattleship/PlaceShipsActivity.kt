@@ -12,16 +12,28 @@ class PlaceShipsActivity : AppCompatActivity() {
 
     val GRID_SIZE = 10
     lateinit var shipGrid: Array<Array<Cell>>
+    var currentStatusGrid = GameInfo.statusGridShipsP1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_place_ships)
 
+        if(GameInfo.currentPlayer == 1) {
+            currentStatusGrid = GameInfo.statusGridShipsP1
+            placeShipsTextView.text = "P1 Place Ships"
+        }
+
+        if(GameInfo.currentPlayer == 2) {
+            currentStatusGrid = GameInfo.statusGridHistoryP2
+            placeShipsTextView.text = "P2 Place Ships"
+        }
+
+
         shipGrid = Array(10, { Array(10, { Cell(this) }) })
 
         for(yPos in 0..9) {
             for(xPos in 0..9) {
-                val cell = Cell(this, xPos, yPos, GameInfo.statusGridShipsP1[xPos][yPos])
+                var cell: Cell = Cell(this, xPos, yPos, currentStatusGrid[xPos][yPos], false)
                 shipGrid[xPos][yPos] = cell
                 placeShipsGridLayout.addView(cell)
             }
@@ -52,8 +64,15 @@ class PlaceShipsActivity : AppCompatActivity() {
         }
 
         continueButton.setOnClickListener {
-            val intent: Intent = Intent(applicationContext, GameScreenActivity::class.java)
-            startActivity(intent)
+
+            if(GameInfo.currentPlayer == 1) {
+                GameInfo.currentPlayer = 2
+                val intent: Intent = Intent(applicationContext, PlaceShipsActivity::class.java)
+                startActivity(intent)
+            } else {
+                val intent: Intent = Intent(applicationContext, GameScreenActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
@@ -64,12 +83,31 @@ class PlaceShipsActivity : AppCompatActivity() {
         //Refresh the grid
         for(i in 0..GRID_SIZE - 1) {
             for (j in 0..GRID_SIZE - 1) {
-                shipGrid[j][i].currentStatus = GameInfo.statusGridShipsP1[j][i]
+                shipGrid[j][i].currentStatus = currentStatusGrid[j][i]
             }
         }
     }
 
     fun placeShip(shipToPlace: Ship) {
+        var shipTypeStatus: Status
+        when(shipToPlace) {
+            Ship.DESTROYER -> {
+                shipTypeStatus = Status.DESTROYER
+            }
+            Ship.CRUISER -> {
+                shipTypeStatus = Status.CRUISER
+            }
+            Ship.SUBMARINE -> {
+                shipTypeStatus = Status.SUBMARINE
+            }
+            Ship.BATTLESHIP -> {
+                shipTypeStatus = Status.BATTLESHIP
+            }
+            Ship.CARRIER -> {
+                shipTypeStatus = Status.CARRIER
+            }
+        }
+
         var potentialPlacement: Array<Point>
         start@while(true) {
             var random: Random = Random()
@@ -80,13 +118,12 @@ class PlaceShipsActivity : AppCompatActivity() {
             val startingPoint: Point = Point(currentPoint)
             potentialPlacement = Array(shipToPlace.size, {Point()})
             potentialPlacement[0] = startingPoint
-            //GameInfo.statusGridHistoryP1[currentPoint.x][currentPoint.y] = Status.SHIP
             val randomDirection: Direction = Direction.randomDirection()
 
             when(randomDirection) {
                 Direction.NORTH -> {
                     for(i in 1..shipToPlace.size - 1) {
-                        if(currentPoint.y - 1 < 0 || GameInfo.statusGridShipsP1[currentPoint.x][currentPoint.y - 1] != Status.EMPTY) {
+                        if(currentPoint.y - 1 < 0 || currentStatusGrid[currentPoint.x][currentPoint.y - 1] != Status.EMPTY) {
                             continue@start
                         } else {
                             currentPoint.y--
@@ -99,7 +136,7 @@ class PlaceShipsActivity : AppCompatActivity() {
                 }
                 Direction.SOUTH -> {
                     for(i in 1..shipToPlace.size - 1) {
-                        if(currentPoint.y + 1 > 9 || GameInfo.statusGridShipsP1[currentPoint.x][currentPoint.y + 1] != Status.EMPTY) {
+                        if(currentPoint.y + 1 > 9 || currentStatusGrid[currentPoint.x][currentPoint.y + 1] != Status.EMPTY) {
                             continue@start
                         } else {
                             currentPoint.y++
@@ -112,7 +149,7 @@ class PlaceShipsActivity : AppCompatActivity() {
                 }
                 Direction.EAST -> {
                     for(i in 1..shipToPlace.size - 1) {
-                        if(currentPoint.x + 1 > 9 || GameInfo.statusGridShipsP1[currentPoint.x + 1][currentPoint.y] != Status.EMPTY) {
+                        if(currentPoint.x + 1 > 9 || currentStatusGrid[currentPoint.x + 1][currentPoint.y] != Status.EMPTY) {
                             continue@start
                         } else {
                             currentPoint.x++
@@ -125,7 +162,7 @@ class PlaceShipsActivity : AppCompatActivity() {
                 }
                 Direction.WEST -> {
                     for(i in 1..shipToPlace.size - 1) {
-                        if(currentPoint.x - 1 < 0 || GameInfo.statusGridShipsP1[currentPoint.x - 1][currentPoint.y] != Status.EMPTY) {
+                        if(currentPoint.x - 1 < 0 || currentStatusGrid[currentPoint.x - 1][currentPoint.y] != Status.EMPTY) {
                             continue@start
                         } else {
                             currentPoint.x--
@@ -139,7 +176,7 @@ class PlaceShipsActivity : AppCompatActivity() {
             }
         }
         for(i in potentialPlacement) {
-            GameInfo.statusGridShipsP1[i.x][i.y] = Status.SHIP
+            currentStatusGrid[i.x][i.y] = shipTypeStatus
         }
     }
 

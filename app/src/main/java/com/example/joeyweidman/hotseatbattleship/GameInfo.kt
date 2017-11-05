@@ -10,11 +10,17 @@ object GameInfo {
     var statusGridShipsP1: Array<Array<Status>>
     var statusGridShipsP2: Array<Array<Status>>
 
+    var player1: Player
+    var player2: Player
+
     init {
         currentPlayer = 1
         statusGridHistoryP1 = Array(10, { Array(10, { Status.EMPTY }) })
         statusGridHistoryP2 = Array(10, { Array(10, { Status.EMPTY }) })
         statusGridShipsP1 = Array(10, { Array(10, { Status.EMPTY }) })
         statusGridShipsP2 = Array(10, { Array(10, { Status.EMPTY }) })
+
+        player1 = Player()
+        player2 = Player()
     }
 }

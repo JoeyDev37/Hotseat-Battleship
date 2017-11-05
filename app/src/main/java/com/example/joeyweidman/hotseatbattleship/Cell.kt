@@ -17,10 +17,13 @@ import android.opengl.ETC1.getWidth
 class Cell : View {
     var xPos: Int = 0
     var yPos: Int = 0
-    constructor(context: Context?, x: Int, y: Int, status: Status) : super(context) {
+    private var isActive: Boolean = false //Allows the cell to be changeable.
+
+    constructor(context: Context?, x: Int, y: Int, status: Status, isActive: Boolean) : super(context) {
         xPos = x
         yPos = y
         currentStatus = status
+        this.isActive = isActive
     }
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -49,7 +52,19 @@ class Cell : View {
             Status.EMPTY -> {
                 selectedColor = Color.CYAN
             }
-            Status.SHIP -> {
+            (Status.DESTROYER) -> {
+                selectedColor = Color.GRAY
+            }
+            (Status.CRUISER) -> {
+                selectedColor = Color.GRAY
+            }
+            (Status.SUBMARINE) -> {
+                selectedColor = Color.GRAY
+            }
+            (Status.BATTLESHIP) -> {
+                selectedColor = Color.GRAY
+            }
+            (Status.CARRIER) -> {
                 selectedColor = Color.GRAY
             }
             Status.MISS -> {
@@ -69,10 +84,15 @@ class Cell : View {
 
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
-                currentStatus = Status.SHIP
-                Log.e("Cell", xPos.toString() + " , " + yPos.toString())
-                GameInfo.statusGridHistoryP1[xPos][yPos] = currentStatus
-                invalidate()
+                if(isActive) {
+                    if(currentStatus == Status.DESTROYER || currentStatus == Status.CRUISER || currentStatus == Status.SUBMARINE ||
+                            currentStatus == Status.BATTLESHIP || currentStatus == Status.CARRIER) {
+                        currentStatus = Status.HIT
+                    }
+                    Log.e("Cell", xPos.toString() + " , " + yPos.toString())
+                    GameInfo.statusGridHistoryP1[xPos][yPos] = currentStatus
+                    invalidate()
+                }
             }
         }
         return true

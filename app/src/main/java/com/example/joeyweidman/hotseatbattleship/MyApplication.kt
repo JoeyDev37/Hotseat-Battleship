@@ -92,7 +92,7 @@ class MyApplication: Application() {
         }
 
         fun writeObject(file: String) {
-            val fileStream: FileOutputStream? = this.instance?.openFileOutput(file, Context.MODE_PRIVATE)
+            /*val fileStream: FileOutputStream? = this.instance?.openFileOutput(file, Context.MODE_PRIVATE)
             val objectStream = ObjectOutputStream(fileStream)
 
             objectStream.writeObject(gameState)
@@ -109,11 +109,24 @@ class MyApplication: Application() {
             objectStream.writeObject(P2AttackGrid)
 
             objectStream.close()
-            fileStream?.close()
+            fileStream?.close()*/
+
+            val filename = file
+            val string = "Hello world!"
+            val outputStream: FileOutputStream
+
+            try {
+                outputStream = this.applicationContext().openFileOutput(filename, Context.MODE_PRIVATE)
+                outputStream.write(string.toByteArray())
+                outputStream.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
         }
 
         fun readObject(file: File) {
-            val fileStream = FileInputStream(file)
+            /*val fileStream = FileInputStream(file)
             val objectStream = ObjectInputStream(fileStream)
 
             gameState = objectStream.readObject() as String
@@ -127,7 +140,7 @@ class MyApplication: Application() {
             P1ShipGrid = objectStream.read() as Array<Array<Cell>>
             P1AttackGrid = objectStream.read() as Array<Array<Cell>>
             P2ShipGrid = objectStream.read() as Array<Array<Cell>>
-            P2AttackGrid = objectStream.read() as Array<Array<Cell>>
+            P2AttackGrid = objectStream.read() as Array<Array<Cell>>*/
         }
     }
 }

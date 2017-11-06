@@ -9,12 +9,13 @@ import android.view.MotionEvent
 import android.view.View
 import kotlinx.android.synthetic.main.activity_game_screen.*
 import kotlinx.android.synthetic.main.activity_game_screen.view.*
+import java.io.Serializable
 
 
 /**
  * Created by Joey Weidman on 11/3/2017.
  */
-class Cell : View {
+class Cell : View, Serializable {
     var isTouchable: Boolean = false //Allows the cell status to be changeable.
 
     constructor(context: Context?, isTouchable: Boolean) : super(context) {

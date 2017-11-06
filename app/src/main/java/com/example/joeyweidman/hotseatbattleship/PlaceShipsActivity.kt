@@ -17,12 +17,12 @@ class PlaceShipsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_place_ships)
 
-        if(GameInfo.currentPlayer == 1) {
+        if(MyApplication.currentPlayer == 1) {
             placeShipsTextView.text = "P1 Place Ships"
-            grid = GameInfo.P1ShipGrid
-        } else if (GameInfo.currentPlayer == 2) {
+            grid = MyApplication.P1ShipGrid
+        } else if (MyApplication.currentPlayer == 2) {
             placeShipsTextView.text = "P2 Place Ships"
-            grid = GameInfo.P2ShipGrid
+            grid = MyApplication.P2ShipGrid
         }
 
 
@@ -38,11 +38,11 @@ class PlaceShipsActivity : AppCompatActivity() {
 
                     var layoutWidth = placeShipsGridLayout.width
                     var layoutHeight = placeShipsGridLayout.height
-                    val cellWidth = layoutWidth / GameInfo.GRID_SIZE
-                    val cellHeight = layoutHeight / GameInfo.GRID_SIZE
+                    val cellWidth = layoutWidth / MyApplication.GRID_SIZE
+                    val cellHeight = layoutHeight / MyApplication.GRID_SIZE
 
-                    for (yPos in 0..GameInfo.GRID_SIZE - 1) {
-                        for (xPos in 0..GameInfo.GRID_SIZE - 1) {
+                    for (yPos in 0..MyApplication.GRID_SIZE - 1) {
+                        for (xPos in 0..MyApplication.GRID_SIZE - 1) {
                             val params = grid[xPos][yPos].layoutParams as GridLayout.LayoutParams
                             params.width = cellWidth - 2 * MARGIN
                             params.height = cellHeight - 2 * MARGIN
@@ -58,13 +58,13 @@ class PlaceShipsActivity : AppCompatActivity() {
 
         continueButton.setOnClickListener {
 
-            if(GameInfo.currentPlayer == 1) {
-                GameInfo.currentPlayer = 2
-                val intent: Intent = Intent(applicationContext, PlaceShipsActivity::class.java)
+            if(MyApplication.currentPlayer == 1) {
+                MyApplication.currentPlayer = 2
+                val intent: Intent = Intent(MyApplication.applicationContext(), PlaceShipsActivity::class.java)
                 startActivity(intent)
             } else {
-                GameInfo.currentPlayer = 1
-                val intent: Intent = Intent(applicationContext, GameScreenActivity::class.java)
+                MyApplication.currentPlayer = 1
+                val intent: Intent = Intent(MyApplication.applicationContext(), GameScreenActivity::class.java)
                 startActivity(intent)
             }
         }

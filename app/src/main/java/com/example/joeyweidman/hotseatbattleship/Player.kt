@@ -1,9 +1,11 @@
 package com.example.joeyweidman.hotseatbattleship
 
+import java.io.Serializable
+
 /**
  * Created by pcjoe on 11/4/2017.
  */
-class Player {
+class Player: Serializable {
     var shipsRemaining: Int
     var destroyerHealth: Int
     var cruiserHealth: Int

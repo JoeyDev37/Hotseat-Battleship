@@ -12,10 +12,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 
-
-
-
-
 /*
  *Used this tutorial as reference to insert views into a GridLayout:
  * http://android-er.blogspot.com/2014/09/insert-view-to-gridlayout-dynamically.html
@@ -30,14 +26,14 @@ class GameScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_screen)
 
-        if(GameInfo.currentPlayer == 1) {
+        if(MyApplication.currentPlayer == 1) {
             playerTurnText.text = "P1 Turn"
-            topGrid = GameInfo.P1AttackGrid
-            bottomGrid = GameInfo.P1ShipGrid
-        } else if(GameInfo.currentPlayer == 2) {
+            topGrid = MyApplication.P1AttackGrid
+            bottomGrid = MyApplication.P1ShipGrid
+        } else if(MyApplication.currentPlayer == 2) {
             playerTurnText.text = "P2 Turn"
-            topGrid = GameInfo.P2AttackGrid
-            bottomGrid = GameInfo.P2ShipGrid
+            topGrid = MyApplication.P2AttackGrid
+            bottomGrid = MyApplication.P2ShipGrid
         }
 
         @SuppressLint("ClickableViewAccessibility")
@@ -46,10 +42,10 @@ class GameScreenActivity : AppCompatActivity() {
                 var currentCell: Cell = topGrid[xPos][yPos]
                 currentCell.setOnTouchListener(object : OnTouchListener {
                     override fun onTouch(v: View, event: MotionEvent): Boolean {
-                        if(GameInfo.currentPlayer == 1) {
-                            opponentShipGrid = GameInfo.P2ShipGrid
-                        } else if(GameInfo.currentPlayer == 2) {
-                            opponentShipGrid = GameInfo.P1ShipGrid
+                        if(MyApplication.currentPlayer == 1) {
+                            opponentShipGrid = MyApplication.P2ShipGrid
+                        } else if(MyApplication.currentPlayer == 2) {
+                            opponentShipGrid = MyApplication.P1ShipGrid
                         }
                         when(event.action) {
                             (MotionEvent.ACTION_DOWN) -> {
@@ -75,69 +71,69 @@ class GameScreenActivity : AppCompatActivity() {
 
                                         var status: String = "HIT"
 
-                                        val oppositePlayer = if(GameInfo.currentPlayer == 1) {2} else {1}
+                                        val oppositePlayer = if(MyApplication.currentPlayer == 1) {2} else {1}
 
-                                        GameInfo.hitShip(opponentShipGrid[xPos][yPos].shipType, oppositePlayer)
+                                        MyApplication.hitShip(opponentShipGrid[xPos][yPos].shipType, oppositePlayer)
 
-                                        if(GameInfo.currentPlayer == 2) {
-                                            if(GameInfo.player1.destroyerHealth == 0) {
+                                        if(MyApplication.currentPlayer == 2) {
+                                            if(MyApplication.player1.destroyerHealth == 0) {
                                                 status = "SUNK DESTROYER"
                                                 sinkShip(Ship.DESTROYER)
-                                                GameInfo.player1.destroyerHealth = -1
-                                            } else if (GameInfo.player1.cruiserHealth == 0) {
+                                                MyApplication.player1.destroyerHealth = -1
+                                            } else if (MyApplication.player1.cruiserHealth == 0) {
                                                 status = "SUNK CRUISER"
                                                 sinkShip(Ship.CRUISER)
-                                                GameInfo.player1.cruiserHealth = -1
-                                            } else if (GameInfo.player1.submarineHealth == 0) {
+                                                MyApplication.player1.cruiserHealth = -1
+                                            } else if (MyApplication.player1.submarineHealth == 0) {
                                                 status = "SUNK SUBMARINE"
                                                 sinkShip(Ship.SUBMARINE)
-                                                GameInfo.player1.submarineHealth = -1
-                                            } else if (GameInfo.player1.battleshipHealth == 0) {
+                                                MyApplication.player1.submarineHealth = -1
+                                            } else if (MyApplication.player1.battleshipHealth == 0) {
                                                 status = "SUNK BATTLESHIP"
                                                 sinkShip(Ship.BATTLESHIP)
-                                                GameInfo.player1.battleshipHealth = -1
-                                            } else if (GameInfo.player1.carrierHealth == 0) {
+                                                MyApplication.player1.battleshipHealth = -1
+                                            } else if (MyApplication.player1.carrierHealth == 0) {
                                                 status = "SUNK CARRIER"
                                                 sinkShip(Ship.CARRIER)
-                                                GameInfo.player1.carrierHealth = -1
+                                                MyApplication.player1.carrierHealth = -1
                                             }
                                         }
 
-                                        if(GameInfo.currentPlayer == 1) {
-                                            if(GameInfo.player2.destroyerHealth == 0) {
+                                        if(MyApplication.currentPlayer == 1) {
+                                            if(MyApplication.player2.destroyerHealth == 0) {
                                                 status = "SUNK DESTROYER"
                                                 sinkShip(Ship.DESTROYER)
-                                                GameInfo.player2.destroyerHealth = -1
-                                            } else if (GameInfo.player2.cruiserHealth == 0) {
+                                                MyApplication.player2.destroyerHealth = -1
+                                            } else if (MyApplication.player2.cruiserHealth == 0) {
                                                 status = "SUNK CRUISER"
                                                 sinkShip(Ship.CRUISER)
-                                                GameInfo.player2.cruiserHealth = -1
-                                            } else if (GameInfo.player2.submarineHealth == 0) {
+                                                MyApplication.player2.cruiserHealth = -1
+                                            } else if (MyApplication.player2.submarineHealth == 0) {
                                                 status = "SUNK SUBMARINE"
                                                 sinkShip(Ship.SUBMARINE)
-                                                GameInfo.player2.submarineHealth = -1
-                                            } else if (GameInfo.player2.battleshipHealth == 0) {
+                                                MyApplication.player2.submarineHealth = -1
+                                            } else if (MyApplication.player2.battleshipHealth == 0) {
                                                 status = "SUNK BATTLESHIP"
                                                 sinkShip(Ship.BATTLESHIP)
-                                                GameInfo.player2.battleshipHealth = -1
-                                            } else if (GameInfo.player2.carrierHealth == 0) {
+                                                MyApplication.player2.battleshipHealth = -1
+                                            } else if (MyApplication.player2.carrierHealth == 0) {
                                                 status = "SUNK CARRIER"
                                                 sinkShip(Ship.CARRIER)
-                                                GameInfo.player2.carrierHealth = -1
+                                                MyApplication.player2.carrierHealth = -1
                                             }
                                         }
 
                                         if(checkForVictory()) {
-                                            if(GameInfo.currentPlayer == 1)
+                                            if(MyApplication.currentPlayer == 1)
                                                 status = "P1 VICTORY!"
-                                            else if (GameInfo.currentPlayer == 2)
+                                            else if (MyApplication.currentPlayer == 2)
                                                 status = "P2 VICTORY!"
                                         }
 
                                         changePlayer()
-                                        val intent: Intent = Intent(applicationContext, TextActivity::class.java)
+                                        val intent: Intent = Intent(MyApplication.applicationContext(), TextActivity::class.java)
                                         intent.putExtra("STATUS", status)
-                                        applicationContext.startActivity(intent)
+                                        MyApplication.applicationContext().startActivity(intent)
                                     }
                                     currentCell.invalidate()
                                 }
@@ -173,11 +169,11 @@ class GameScreenActivity : AppCompatActivity() {
 
                     var layoutWidth = attackGridLayout.width
                     var layoutHeight = attackGridLayout.height
-                    val cellWidth = layoutWidth / GameInfo.GRID_SIZE
-                    val cellHeight = layoutHeight / GameInfo.GRID_SIZE
+                    val cellWidth = layoutWidth / MyApplication.GRID_SIZE
+                    val cellHeight = layoutHeight / MyApplication.GRID_SIZE
 
-                    for (yPos in 0..GameInfo.GRID_SIZE - 1) {
-                        for (xPos in 0..GameInfo.GRID_SIZE - 1) {
+                    for (yPos in 0..MyApplication.GRID_SIZE - 1) {
+                        for (xPos in 0..MyApplication.GRID_SIZE - 1) {
                             val params = topGrid[xPos][yPos].layoutParams as GridLayout.LayoutParams
                             params.width = cellWidth - 2 * MARGIN
                             params.height = cellHeight - 2 * MARGIN
@@ -193,11 +189,11 @@ class GameScreenActivity : AppCompatActivity() {
 
                     var layoutWidth = shipGridLayout.width
                     var layoutHeight = shipGridLayout.height
-                    val cellWidth = layoutWidth / GameInfo.GRID_SIZE
-                    val cellHeight = layoutHeight / GameInfo.GRID_SIZE
+                    val cellWidth = layoutWidth / MyApplication.GRID_SIZE
+                    val cellHeight = layoutHeight / MyApplication.GRID_SIZE
 
-                    for (yPos in 0..GameInfo.GRID_SIZE - 1) {
-                        for (xPos in 0..GameInfo.GRID_SIZE - 1) {
+                    for (yPos in 0..MyApplication.GRID_SIZE - 1) {
+                        for (xPos in 0..MyApplication.GRID_SIZE - 1) {
                             val params = bottomGrid[xPos][yPos].layoutParams as GridLayout.LayoutParams
                             params.width = cellWidth - 2 * MARGIN
                             params.height = cellHeight - 2 * MARGIN
@@ -209,10 +205,10 @@ class GameScreenActivity : AppCompatActivity() {
     }
 
     fun changePlayer() {
-        if(GameInfo.currentPlayer == 1)
-            GameInfo.currentPlayer = 2
+        if(MyApplication.currentPlayer == 1)
+            MyApplication.currentPlayer = 2
         else
-            GameInfo.currentPlayer = 1
+            MyApplication.currentPlayer = 1
     }
 
     fun sinkShip(shipType: Ship) {
@@ -229,12 +225,12 @@ class GameScreenActivity : AppCompatActivity() {
     }
 
     fun checkForVictory() : Boolean {
-        if(GameInfo.currentPlayer == 1) {
-            return (GameInfo.player2.destroyerHealth == -1 && GameInfo.player2.cruiserHealth == -1 && GameInfo.player2.submarineHealth == -1 &&
-                    GameInfo.player2.battleshipHealth == -1 && GameInfo.player2.carrierHealth == -1)
-        } else if (GameInfo.currentPlayer == 2) {
-            return (GameInfo.player1.destroyerHealth == -1 && GameInfo.player1.cruiserHealth == -1 && GameInfo.player1.submarineHealth == -1 &&
-                    GameInfo.player1.battleshipHealth == -1 && GameInfo.player1.carrierHealth == -1)
+        if(MyApplication.currentPlayer == 1) {
+            return (MyApplication.player2.destroyerHealth == -1 && MyApplication.player2.cruiserHealth == -1 && MyApplication.player2.submarineHealth == -1 &&
+                    MyApplication.player2.battleshipHealth == -1 && MyApplication.player2.carrierHealth == -1)
+        } else if (MyApplication.currentPlayer == 2) {
+            return (MyApplication.player1.destroyerHealth == -1 && MyApplication.player1.cruiserHealth == -1 && MyApplication.player1.submarineHealth == -1 &&
+                    MyApplication.player1.battleshipHealth == -1 && MyApplication.player1.carrierHealth == -1)
         }
         return false
     }

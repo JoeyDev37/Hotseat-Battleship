@@ -18,6 +18,10 @@ class TextActivity : AppCompatActivity() {
             statusText.setBackgroundColor(Color.GREEN)
         if(statusText.text == "MISS")
             statusText.setBackgroundColor(Color.RED)
+        if(statusText.text == "SUNK DESTROYER" || statusText.text == "SUNK SUBMARINE" || statusText.text == "SUNK CRUISER" || statusText.text == "SUNK BATTLESHIP" || statusText.text == "SUNK CARRIER")
+            statusText.setBackgroundColor(Color.rgb(244, 140, 66))
+        if(statusText.text == "P1 VICTORY" || statusText.text == "P2 VICTORY")
+            statusText.setBackgroundColor(Color.BLUE)
 
         nextPlayerButton.setOnClickListener {
             val intent: Intent = Intent(applicationContext, GameScreenActivity::class.java)

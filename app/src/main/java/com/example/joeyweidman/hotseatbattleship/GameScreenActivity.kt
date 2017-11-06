@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.GridLayout
 import kotlinx.android.synthetic.main.activity_game_screen.*
@@ -58,35 +59,86 @@ class GameScreenActivity : AppCompatActivity() {
                                         return true
                                     }
                                     if(opponentShipGrid[xPos][yPos].currentStatus == Status.EMPTY) {
-
                                         currentCell.currentStatus = Status.MISS
+                                        opponentShipGrid[xPos][yPos].currentStatus = Status.MISS
 
                                         val status: String = "MISS"
 
-                                        if(GameInfo.currentPlayer == 1)
-                                            GameInfo.currentPlayer = 2
-                                        else
-                                            GameInfo.currentPlayer = 1
-
+                                        changePlayer()
                                         val intent: Intent = Intent(applicationContext, TextActivity::class.java)
                                         intent.putExtra("STATUS", status)
                                         applicationContext.startActivity(intent)
 
                                     } else {
                                         currentCell.currentStatus = Status.HIT
+                                        opponentShipGrid[xPos][yPos].currentStatus = Status.HIT
 
-                                        val status: String = "HIT"
+                                        var status: String = "HIT"
 
-                                        if(GameInfo.currentPlayer == 1)
-                                            GameInfo.currentPlayer = 2
-                                        else
-                                            GameInfo.currentPlayer = 1
+                                        val oppositePlayer = if(GameInfo.currentPlayer == 1) {2} else {1}
 
+                                        GameInfo.hitShip(opponentShipGrid[xPos][yPos].shipType, oppositePlayer)
+
+                                        if(GameInfo.currentPlayer == 2) {
+                                            if(GameInfo.player1.destroyerHealth == 0) {
+                                                status = "SUNK DESTROYER"
+                                                sinkShip(Ship.DESTROYER)
+                                                GameInfo.player1.destroyerHealth = -1
+                                            } else if (GameInfo.player1.cruiserHealth == 0) {
+                                                status = "SUNK CRUISER"
+                                                sinkShip(Ship.CRUISER)
+                                                GameInfo.player1.cruiserHealth = -1
+                                            } else if (GameInfo.player1.submarineHealth == 0) {
+                                                status = "SUNK SUBMARINE"
+                                                sinkShip(Ship.SUBMARINE)
+                                                GameInfo.player1.submarineHealth = -1
+                                            } else if (GameInfo.player1.battleshipHealth == 0) {
+                                                status = "SUNK BATTLESHIP"
+                                                sinkShip(Ship.BATTLESHIP)
+                                                GameInfo.player1.battleshipHealth = -1
+                                            } else if (GameInfo.player1.carrierHealth == 0) {
+                                                status = "SUNK CARRIER"
+                                                sinkShip(Ship.CARRIER)
+                                                GameInfo.player1.carrierHealth = -1
+                                            }
+                                        }
+
+                                        if(GameInfo.currentPlayer == 1) {
+                                            if(GameInfo.player2.destroyerHealth == 0) {
+                                                status = "SUNK DESTROYER"
+                                                sinkShip(Ship.DESTROYER)
+                                                GameInfo.player2.destroyerHealth = -1
+                                            } else if (GameInfo.player2.cruiserHealth == 0) {
+                                                status = "SUNK CRUISER"
+                                                sinkShip(Ship.CRUISER)
+                                                GameInfo.player2.cruiserHealth = -1
+                                            } else if (GameInfo.player2.submarineHealth == 0) {
+                                                status = "SUNK SUBMARINE"
+                                                sinkShip(Ship.SUBMARINE)
+                                                GameInfo.player2.submarineHealth = -1
+                                            } else if (GameInfo.player2.battleshipHealth == 0) {
+                                                status = "SUNK BATTLESHIP"
+                                                sinkShip(Ship.BATTLESHIP)
+                                                GameInfo.player2.battleshipHealth = -1
+                                            } else if (GameInfo.player2.carrierHealth == 0) {
+                                                status = "SUNK CARRIER"
+                                                sinkShip(Ship.CARRIER)
+                                                GameInfo.player2.carrierHealth = -1
+                                            }
+                                        }
+
+                                        if(checkForVictory()) {
+                                            if(GameInfo.currentPlayer == 1)
+                                                status = "P1 VICTORY!"
+                                            else if (GameInfo.currentPlayer == 2)
+                                                status = "P2 VICTORY!"
+                                        }
+
+                                        changePlayer()
                                         val intent: Intent = Intent(applicationContext, TextActivity::class.java)
                                         intent.putExtra("STATUS", status)
                                         applicationContext.startActivity(intent)
                                     }
-                                    //playerAttackGrid[xPos][yPos].currentStatus = currentStatus
                                     currentCell.invalidate()
                                 }
                             }
@@ -154,5 +206,36 @@ class GameScreenActivity : AppCompatActivity() {
                         }
                     }
                 })
+    }
+
+    fun changePlayer() {
+        if(GameInfo.currentPlayer == 1)
+            GameInfo.currentPlayer = 2
+        else
+            GameInfo.currentPlayer = 1
+    }
+
+    fun sinkShip(shipType: Ship) {
+        for(yPos in 0..9) {
+            for(xPos in 0..9) {
+                if(opponentShipGrid[xPos][yPos].shipType == shipType){
+                    topGrid[xPos][yPos].currentStatus = Status.SUNK
+                    topGrid[xPos][yPos].invalidate()
+                    opponentShipGrid[xPos][yPos].currentStatus = Status.SUNK
+                    opponentShipGrid[xPos][yPos].invalidate()
+                }
+            }
+        }
+    }
+
+    fun checkForVictory() : Boolean {
+        if(GameInfo.currentPlayer == 1) {
+            return (GameInfo.player2.destroyerHealth == -1 && GameInfo.player2.cruiserHealth == -1 && GameInfo.player2.submarineHealth == -1 &&
+                    GameInfo.player2.battleshipHealth == -1 && GameInfo.player2.carrierHealth == -1)
+        } else if (GameInfo.currentPlayer == 2) {
+            return (GameInfo.player1.destroyerHealth == -1 && GameInfo.player1.cruiserHealth == -1 && GameInfo.player1.submarineHealth == -1 &&
+                    GameInfo.player1.battleshipHealth == -1 && GameInfo.player1.carrierHealth == -1)
+        }
+        return false
     }
 }

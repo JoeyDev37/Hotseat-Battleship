@@ -147,6 +147,7 @@ class PlaceShipsActivity : AppCompatActivity() {
         }
         for(i in potentialPlacement) {
             grid[i.x][i.y].currentStatus = Status.SHIP
+            grid[i.x][i.y].shipType = shipToPlace
         }
     }
 

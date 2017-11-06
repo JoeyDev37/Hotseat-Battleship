@@ -15,16 +15,8 @@ import kotlinx.android.synthetic.main.activity_game_screen.view.*
  * Created by Joey Weidman on 11/3/2017.
  */
 class Cell : View {
-    var xPos: Int = 0
-    var yPos: Int = 0
-    var isTouchable: Boolean = false //Allows the cell to be changeable.
+    var isTouchable: Boolean = false //Allows the cell status to be changeable.
 
-    constructor(context: Context?, x: Int, y: Int, status: Status, isTouchable: Boolean) : super(context) {
-        xPos = x
-        yPos = y
-        currentStatus = status
-        this.isTouchable = isTouchable
-    }
     constructor(context: Context?, isTouchable: Boolean) : super(context) {
         this.isTouchable = isTouchable
     }
@@ -32,6 +24,8 @@ class Cell : View {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    var shipType: Ship? = null
 
     var currentStatus: Status
         set(newStatus) {

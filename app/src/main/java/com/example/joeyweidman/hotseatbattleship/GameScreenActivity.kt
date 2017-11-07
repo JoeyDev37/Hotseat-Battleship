@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.activity_game_screen.*
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
+import kotlinx.android.synthetic.main.activity_text.*
 
 /*
  *Used this tutorial as reference to insert views into a GridLayout:
@@ -25,6 +26,11 @@ class GameScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_screen)
+
+        mainMenuButton.setOnClickListener {
+            val intent: Intent = Intent(MyApplication.applicationContext(), MainActivity::class.java)
+            startActivity(intent)
+        }
 
         if(MyApplication.currentPlayer == 1) {
             playerTurnText.text = "P1 Turn"
@@ -124,13 +130,18 @@ class GameScreenActivity : AppCompatActivity() {
                                         }
 
                                         if(checkForVictory()) {
-                                            if(MyApplication.currentPlayer == 1)
+                                            if(MyApplication.currentPlayer == 1) {
                                                 status = "P1 VICTORY!"
-                                            else if (MyApplication.currentPlayer == 2)
+                                                MyApplication.gameState = "P1 Victory"
+                                            } else if (MyApplication.currentPlayer == 2) {
                                                 status = "P2 VICTORY!"
+                                                MyApplication.gameState = "P2 Victory"
+                                                nextPlayerButton.isEnabled = false
+                                            }
                                         }
 
                                         changePlayer()
+                                        MyApplication.saveGame(MyApplication.gameName)
                                         val intent: Intent = Intent(MyApplication.applicationContext(), TextActivity::class.java)
                                         intent.putExtra("STATUS", status)
                                         MyApplication.applicationContext().startActivity(intent)

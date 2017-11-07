@@ -53,17 +53,31 @@ class PlaceShipsActivity : AppCompatActivity() {
                 })
 
         autoButton.setOnClickListener {
+            for(i in 0..9) {
+                for(j in 0..9) {
+                    grid[j][i].currentStatus = Status.EMPTY
+                    grid[j][i].shipType = null
+                }
+            }
             placeRandomShips()
+        }
+
+        mainMenuButton.setOnClickListener {
+            val intent: Intent = Intent(MyApplication.applicationContext(), MainActivity::class.java)
+            startActivity(intent)
         }
 
         continueButton.setOnClickListener {
 
             if(MyApplication.currentPlayer == 1) {
                 MyApplication.currentPlayer = 2
+                MyApplication.saveGame(MyApplication.gameName)
                 val intent: Intent = Intent(MyApplication.applicationContext(), PlaceShipsActivity::class.java)
                 startActivity(intent)
             } else {
                 MyApplication.currentPlayer = 1
+                MyApplication.gameState = "In Progress"
+                MyApplication.saveGame(MyApplication.gameName)
                 val intent: Intent = Intent(MyApplication.applicationContext(), GameScreenActivity::class.java)
                 startActivity(intent)
             }

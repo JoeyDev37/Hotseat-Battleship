@@ -24,7 +24,13 @@ class TextActivity : AppCompatActivity() {
             statusText.setBackgroundColor(Color.BLUE)
 
         nextPlayerButton.setOnClickListener {
+            MyApplication.saveGame(MyApplication.gameName)
             val intent: Intent = Intent(applicationContext, GameScreenActivity::class.java)
+            startActivity(intent)
+        }
+
+        mainMenuButton1.setOnClickListener {
+            val intent: Intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
         }
     }

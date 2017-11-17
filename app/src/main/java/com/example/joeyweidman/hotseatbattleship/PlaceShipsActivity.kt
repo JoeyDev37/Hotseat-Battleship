@@ -88,6 +88,7 @@ class PlaceShipsActivity : AppCompatActivity() {
         for(ship in Ship.values()) {
             placeShip(ship)
         }
+        MyApplication.saveGame(MyApplication.gameName)
     }
 
     fun placeShip(shipToPlace: Ship) {

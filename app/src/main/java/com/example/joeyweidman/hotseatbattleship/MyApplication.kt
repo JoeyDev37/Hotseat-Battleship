@@ -5,10 +5,6 @@ import android.content.Context
 import android.util.Log
 import java.io.*
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.annotations.Expose
-
 /**
  * Created by pcjoe on 11/5/2017.
  */
@@ -29,15 +25,14 @@ class MyApplication: Application(), Serializable {
         fun applicationContext() : Context {
             return instance!!.applicationContext
         }
-
-        @Expose var gameName: String = "Untitled"
-        @Expose var gameState: String = "Starting"
-        @Expose var currentPlayer: Int
+        var gameName: String = "Untitled"
+        var gameState: String = "Starting"
+        var currentPlayer: Int
 
         val GRID_SIZE = 10
 
-        @Expose var player1: Player
-        @Expose var player2: Player
+        var player1: Player
+        var player2: Player
 
         var player1UnsunkShips: Int
         var player2UnsunkShips: Int

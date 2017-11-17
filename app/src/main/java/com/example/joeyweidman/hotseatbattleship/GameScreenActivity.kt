@@ -136,7 +136,7 @@ class GameScreenActivity : AppCompatActivity() {
                                             } else if (MyApplication.currentPlayer == 2) {
                                                 status = "P2 VICTORY!"
                                                 MyApplication.gameState = "P2 Victory"
-                                                nextPlayerButton.isEnabled = false
+                                                //nextPlayerButton.isActivated = false
                                             }
                                         }
 

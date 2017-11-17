@@ -13,8 +13,6 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import android.widget.AdapterView
 import android.widget.Toast
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.ObjectInputStream
@@ -72,15 +70,6 @@ class MainActivity : AppCompatActivity() {
             gameListView.invalidateViews()
         }
 
-        saveButton.setOnClickListener {
-            MyApplication.saveGame(MyApplication.gameName)
-            gameListView.invalidateViews()
-            //val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create() // for pretty print feature
-            //val json: String = gson.toJson(MyApplication)
-            //Log.e("MyApplication", json)
-            //MyApplication.saveGame()
-        }
-
         gameListView.adapter = MyCustomAdapter()
 
         //gameListView.setClickable(true)
@@ -93,8 +82,13 @@ class MainActivity : AppCompatActivity() {
             } else if (MyApplication.gameState == "In Progress") {
                 val intent: Intent = Intent(MyApplication.applicationContext(), GameScreenActivity::class.java)
                 startActivity(intent)
-            } else if (MyApplication.gameState == "P1 Victory" || MyApplication.gameState == "P1 Victory") {
+            } else if (MyApplication.gameState == "P1 Victory") {
                 val intent: Intent = Intent(MyApplication.applicationContext(), TextActivity::class.java)
+                intent.putExtra("STATUS", "P1 Victory")
+                startActivity(intent)
+            } else if (MyApplication.gameState == "P2 Victory") {
+                val intent: Intent = Intent(MyApplication.applicationContext(), TextActivity::class.java)
+                intent.putExtra("STATUS", "P2 Victory")
                 startActivity(intent)
             }
             //MyApplication.readObject(context.filesDir.listFiles()[position])

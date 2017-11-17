@@ -4,13 +4,8 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
-import com.google.gson.annotations.Expose
-import kotlinx.android.synthetic.main.activity_game_screen.*
-import kotlinx.android.synthetic.main.activity_game_screen.view.*
 import java.io.Serializable
-import android.R.attr.name
 import java.io.IOException
 
 
@@ -18,7 +13,6 @@ import java.io.IOException
  * Created by Joey Weidman on 11/3/2017.
  */
 class Cell : View, Serializable {
-    //private val serialVersionUID = 6529685098267757690L
     constructor() : super(null)
     constructor(context: Context?, isTouchable: Boolean) : super(context) {
         this.isTouchable = isTouchable
@@ -28,9 +22,9 @@ class Cell : View, Serializable {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    @Expose var isTouchable: Boolean = false //Allows the cell status to be changeable.
-    @Expose var shipType: Ship?
-    @Expose var currentStatus: Status
+    var isTouchable: Boolean = false //Allows the cell status to be changeable.
+    var shipType: Ship?
+    var currentStatus: Status
         set(newStatus) {
             field = newStatus
             invalidate()
